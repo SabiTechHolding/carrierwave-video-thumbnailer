@@ -22,7 +22,7 @@ module CarrierWave
         format = @options.format || 'jpg'
 
         tmp_path = File.join( File.dirname(current_path), "tmpfile.#{format}" )
-        thumbnailer = FFMpegThumbnailer.new(current_path, tmp_path)
+        thumbnailer = FFMpegThumbnailer.new(current_path, tmp_path, model)
 
         with_thumbnailing_callbacks do
           thumbnailer.run(@options)

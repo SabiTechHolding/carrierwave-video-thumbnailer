@@ -35,9 +35,10 @@ module CarrierWave
 
         attr_reader :input_path, :output_path
 
-        def initialize in_path, out_path
+        def initialize in_path, out_path, model
           @input_path  = in_path
           @output_path = out_path
+          @model = model
         end
 
         def run options
@@ -59,7 +60,7 @@ module CarrierWave
 
             mini_magick_opts = options.options[:mini_magick_opts]
             if mini_magick_opts.is_a?(Proc)
-              mini_magick_opts.call(::MiniMagick::Image.new("#{output_path.shellescape}"))
+              mini_magick_opts.call(::MiniMagick::Image.new("#{output_path.shellescape}"), @model)
             end
 
         end
