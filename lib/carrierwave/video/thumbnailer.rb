@@ -24,15 +24,14 @@ module CarrierWave
         tmp_path = File.join( File.dirname(current_path), "tmpfile.#{format}" )
         thumbnailer = FFMpegThumbnailer.new(current_path, tmp_path, model)
 
-        with_thumbnailing_callbacks do
+        with_thumbnailing_callbacks(tmp_path, current_path) do
           thumbnailer.run(@options)
-          File.rename tmp_path, current_path
         end
       end
 
       private
 
-      def with_thumbnailing_callbacks(&block)
+      def with_thumbnailing_callbacks(tmp_path, current_path, &block)
         callbacks = @options.callbacks
         logger = @options.logger
         begin
@@ -52,6 +51,7 @@ module CarrierWave
 
           raise CarrierWave::ProcessingError.new("Failed to thumbnail with ffmpegthumbnailer. Check ffmpegthumbnailer install and verify video is not corrupt. Original error: #{e}")
         ensure
+          File.rename(tmp_path, current_path)
           reset_thumbnailing_logger
           send_thumbnailing_callback(callbacks[:ensure])
         end
